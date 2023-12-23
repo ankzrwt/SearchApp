@@ -1,0 +1,110 @@
+﻿@model List<Product>
+<style>
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 18px;
+        text-align: left;
+    }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .styled-table th {
+            background-color: #f2f2f2;
+        }
+
+
+    .search-container {
+        display: flex;
+        justify-content: space-between;
+        background-color: #f4f4f4;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+        .search-container input[type="text"],
+        .search-container input[type="number"],
+        .search-container select {
+            padding: 8px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 3px;
+            width: 150px;
+        }
+
+        .search-container button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 3px;
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .search-container a {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 3px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+        }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+   
+    function search() {
+        var result = {}
+
+        var formDataArray = $('#searchForm').serializeArray();
+        formDataArray.forEach(function (item) {
+            result[item.name] = item.value;
+        });
+        $(document).ready(function () {
+            $('#searchResultContainer').load('/getAll',data=result);
+        });
+       
+    }
+    function resetFilter() {
+        location.reload();
+    }
+</script>
+
+@using (Html.BeginForm("Search", "Search", FormMethod.Post, new { id = "searchForm" }))
+{
+    <div class="search-container">
+        <input type="text" name="productName" id="productNameFilter" placeholder="Product Name" />
+        <input type="text" name="size" id="sizeFilter" placeholder="Size" />
+        <input type="number" name="price" id="priceFilter" placeholder="Price" />
+        <input type="date" name="mfgDate" id="mfgDateFilter" placeholder="Manufacturing Date" />
+        <input type="text" name="category" id="categoryFilter" placeholder="Category" />
+
+        <select name="conjunction">
+            <option value="AND">AND</option>
+            <option value="OR">OR</option>
+        </select>
+
+        <button type="button" onclick="search()">Search</button>
+        <button type="button" onclick="resetFilter()">Clear</button>
+    </div>
+}
+
+<div id="searchResultContainer">
+    @* @Html.Partial("_ProductTable", Model) *@
+</div>
+<!-- Display search results in a styled table -->
+<script type="text/javascript">
+    window.onload = function () {
+        $(document).ready(function () {
+            $('#searchResultContainer').load('/getAllProducts');
+        });
+    }
+</script>
+
